@@ -18,5 +18,5 @@ public class BoardPostDto {
     @NotBlank
     private String title;
     @NotBlank
-    private Board.Content_status content_status;
+    private Board.ContentStatus contentStatus; //공개 비공개
 }

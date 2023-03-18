@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
-@RestController
+@RestController // @Controller와 @ResponsBody의 동작을 하나로 결합한 편의 컨트롤러, 모든 핸들러 메소드에서 @ResponseBody를 사용할 필요가 없다는 것입니다.
 @RequestMapping("/v1/boards")
-@Validated
+@Validated //유효성검사 시 필요
 @Slf4j
 @RequiredArgsConstructor //final이 붙어있는 애들만 빈으로 인식 필요한 애들만 생성자를 만들어줌 따라서 컨트롤러에서는 @RAC~~
 public class BoardController {
@@ -24,26 +24,22 @@ public class BoardController {
     private final BoardService boardService;
     private final MemberService memberService;
 
+// 게시글 추가
     @PostMapping
     public ResponseEntity postBoard(@Valid @RequestBody BoardPostDto boardPostDto){
         Board board = boardService.createBoard(mapper.boardPostDtoToBoard(boardPostDto));
         return new ResponseEntity<>(
                 mapper.BoardToBoardResponseDto(board), HttpStatus.CREATED);
-
     }
-/*
-질문수정 구현내용
-- 등록된 질문의 제목과 내용은 질문을 등록한 회원(고객)만 수정할 수 있어야 한다.
-- 회원이 등록한 질문을 비밀글로 변경할 경우, QUESTION_SECRET 상태로 수정되어야 한다.
-- 질문 상태 중에서 QUESTION_ANSWERED 로의 변경은 관리자만 가능하다.
-- 회원이 등록한 질문을 회원이 삭제할 경우, QUESTION_DELETE 상태로 수정되어야 한다.
-- 답변 완료된 질문은 수정할 수 없다.
-*/
+
     @PatchMapping("/{board-id}")
     public ResponseEntity patchBoard(@PathVariable("board-id") @Positive Long board,
-                                     @Valid @RequestBody BoardPatchDto boardPatchDto)
-    Board board = boardService.updateBoard(mapper.boardPatchDtoToBoard(boardPatchDto))
+                                     @Valid @RequestBody BoardPatchDto boardPatchDto){
+    //Dto를 mapper로 바꿔서 service로직에서 UpdateBoard()를 실행
+    Board patchBoard = boardService.updateBoard(mapper.boardPatchDtoToBoard(boardPatchDto));
+    return new ResponseEntity<>(mapper.BoardToBoardResponseDto(patchBoard), HttpStatus.OK);
     }
+
 /*
 질문조회 구현
 - 1건의 특정 질문은 회원(고객)과 관리자 모두 조회할 수 있다.

@@ -2,9 +2,9 @@ package com.QnaApi.exception;
 
 import lombok.Getter;
 
-public enum ExceptionCode {
-    MEMBER_NOT_FOUND(404, "Member not found"),
-    MEMBER_EXISTS(409, "Member exists"),
+public enum ExceptionCode { //예외처리 받는 로직
+    MEMBER_NOT_FOUND(404, "Member not found"), //멤버 찾을수없음
+    MEMBER_EXISTS(409, "Member exists"), // 멤버가 존재함
     COFFEE_NOT_FOUND(404, "Coffee not found"),
     COFFEE_CODE_EXISTS(409, "Coffee Code exists"),
     ORDER_NOT_FOUND(404, "Order not found"),
