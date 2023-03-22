@@ -10,12 +10,12 @@ import java.util.List;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "MEMBER")
 @RequiredArgsConstructor //컴파일러가 필요한 생성자를 자동으로 만들어줌
 public class Member extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long memberId;
+    private Long memberId;
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -42,5 +42,3 @@ public class Member extends Auditable {
         private String status;
     }
 }
-
-

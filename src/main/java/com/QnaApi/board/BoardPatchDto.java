@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import com.QnaApi.board.Board.ContentStatus;
 
 @Setter
+@Getter
 @Validated
 public class BoardPatchDto {
     private Long memberId;

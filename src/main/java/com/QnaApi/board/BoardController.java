@@ -33,11 +33,12 @@ public class BoardController {
     }
 
     @PatchMapping("/{board-id}")
-    public ResponseEntity patchBoard(@PathVariable("board-id") @Positive Long board,
+    public ResponseEntity patchBoard(@PathVariable("board-id") @Positive Long boardId,
                                      @Valid @RequestBody BoardPatchDto boardPatchDto){
     //Dto를 mapper로 바꿔서 service로직에서 UpdateBoard()를 실행
-    Board patchBoard = boardService.updateBoard(mapper.boardPatchDtoToBoard(boardPatchDto));
-    return new ResponseEntity<>(mapper.BoardToBoardResponseDto(patchBoard), HttpStatus.OK);
+        Board board = mapper.boardPatchDtoToBoard(boardPatchDto);
+        Board patchBoard = boardService.updateBoard(board);
+        return new ResponseEntity<>(mapper.BoardToBoardResponseDto(patchBoard), HttpStatus.OK);
     }
 
 /*

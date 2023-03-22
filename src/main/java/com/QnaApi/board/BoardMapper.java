@@ -7,6 +7,7 @@ import org.mapstruct.Mapping;
 public interface BoardMapper {
     @Mapping(source = "memberId" ,target = "member.memberId") //소스:포스트DTO -> board// memberId->
     Board boardPostDtoToBoard(BoardPostDto boardPostDto);
+    @Mapping(source = "memberId", target = "member.memberId")
     Board boardPatchDtoToBoard(BoardPatchDto boardPatchDto);
 
 

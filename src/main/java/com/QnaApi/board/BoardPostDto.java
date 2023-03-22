@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Positive;
 
@@ -17,6 +18,7 @@ public class BoardPostDto {
     private String content;
     @NotBlank
     private String title;
-    @NotBlank
+
+    @NotNull
     private Board.ContentStatus contentStatus; //공개 비공개
 }

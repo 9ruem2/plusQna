@@ -3,12 +3,14 @@ package com.QnaApi.member;
 import com.QnaApi.exception.BusinessLogicException;
 import com.QnaApi.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j //심플로그를 쓸 수 있게 해줌
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
@@ -19,21 +21,24 @@ public class MemberService {
         // 이미 등록된 이메일인지 확인하기
         verifyExistsEmail(member.getEmail());
 
+        //직접출력한거 확인하기
+//        log.info(member.getEmail());
+//        log.error("log출력");
+//        log.warn("위험{}",member.getMemberId());
+
         return memberRepository.save(member); //repository에 저장
     }
 
     //등록된 이메일 확인하는 로직
     private void verifyExistsEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email); //Optional<T>클래스는 해당 변수가 null값을 혹시라도 가지고 있을 경우, NPE가 발생하지 않는다.
-        if(member.isPresent()) // 객체가 null이 있다면
-            throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS); //이미 멤버가 존재한다고 클라이언트에게 알려라
+        if(member.isPresent()) //null이 아닌경우로 Optional이 만들어져 있다면
+            throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS); //MEMBER_EXISTS:멤버로 확인됨
     }
 
     //멤버정보 수정하기
     public Member updateMember(Member member){
         Member findMember = findVerifiedMember(member.getMemberId()); // 멤버 아이디를 가지고 멤버정보 가져오기
-
-        //일단 리팩토링 전 버전으로 구현
 
         // 수정할 정보들이 늘어나면 반복되는 코드가 늘어나는 문제점이 있음
         // optional은 rapper클래스라고 할 수 있음
@@ -47,25 +52,36 @@ public class MemberService {
         return memberRepository.save(findMember);
     }
 
-    // 멤버 정보 가져오기
-    public Member findVerifiedMember(long memberId){ //memberId를 받아옴
-        // 옵셔널로도 체크할 수 있음, 멤버에 바로 접근할 때는 안전할 수 있다 옵셔널이란 것을 사용하는 이유? null값이 자주 들어올 수 있음
-//        Optional<Member> optionalMember = memberRepository.findById(memberId); // memberRepository에 있는 findById메서드를 통해 멤버정보(저장되어있는거? 멤버의 모든내용)를 가져옴
-//
-//        Member findMember = //orElseThrow() : 저장된 값이 존재하면 그 값을 반환하고, 값이 존재하지 않으면 인수로 전달된 예외를 발생시킴.
-//            optionalMember.orElseThrow(() -> //찾은 멤버가 실제로 존재하고있느냐?? 없으면 예외를 던지겠다
-//                new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND)); //멤버를 찾을 수 없음 예외처리
-//
-//        return findMember;
+    // 멤버가 있는지 없는지 확인하는 로직
+    public Member findVerifiedMember(Long memberId) {
 
-        // 옵셔널을 사용하지 않고 member가 Null인지 아닌지 확인하는 로직
-        Member member = memberRepository.findById(memberId);
-        // 이 아이디에 해당하는 member가 저장소에 있냐없냐 확인하는로직. 항상 저장소에서 값을 가지고 올때는 null일수도 아닐 수도있다는 사실을 생각해야한다.
-        if(member==null){ //멤버가 널이면
-            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND); //예외를 던져라
-        }
-        return member;
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        Member findMember =
+                optionalMember.orElseThrow(() ->
+                        new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        return findMember;
     }
+
+/*
+     이 아이디에 해당하는 member가 저장소에 있냐없냐 확인하는로직.
+     항상 저장소에서 값을 가지고 올 때는 null일수도 아닐 수도있다는 사실을 생각해야한다.
+     옵셔널을 사용하지 않고 member가 Null인지 아닌지 확인하는 로직
+    if(member==null){ //멤버가 Null이라면?
+        throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND); // 예외를 던져라
+    }
+    return member;
+*/
+
+
+
+    // //게시글이 존재하는지 확인
+    //    public Board findVerifiedBoard(Long boardId){
+    //        Optional<Board> optionalBoard = boardRepository.findById(boardId);
+    //        Board findBoard =
+    //                optionalBoard.orElseThrow(()->
+    //                    new BusinessLogicException(ExceptionCode.BOARD_NOT_FOUND));
+    //        return findBoard;
+    //    }
 
 
     public List<Member> findMembers(){

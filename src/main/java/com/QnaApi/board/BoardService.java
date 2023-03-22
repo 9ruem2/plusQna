@@ -15,7 +15,6 @@ import java.util.Optional;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberService memberService;
-    private final Board board;
     private final BoardManager boardManager;
 
     // 게시글추가
@@ -27,40 +26,28 @@ public class BoardService {
         return saveBoard(board);
     }
 
-
-    /*
-    질문수정 구현내용
-    - 등록된 질문의 제목과 내용은 질문을 등록한 회원(고객)만 수정할 수 있어야 한다.0
-    - 회원이 등록한 질문을 비밀글로 변경할 경우, QUESTION_SECRET 상태로 수정되어야 한다.
-    - 질문 상태 중에서 QUESTION_ANSWERED 로의 변경은 관리자만 가능하다.
-    - 회원이 등록한 질문을 회원이 삭제할 경우, QUESTION_DELETE 상태로 수정되어야 한다.
-    - 답변 완료된 질문은 수정할 수 없다.
-    */
-
-    // 게시글 업데이트
-
-    public Board updateBoard(Board board){ // 보드에서 업데이트하라는 요청이 왔을 때 받아주는 역할
-        // 세부동작들은 클래스를 하나 만들어주고 하는게 좋음 (코드의 가독성과 재사용을 위해)
-        // 여기서는 검증을 다 해놓고 Manager한테 보내주자
-
+    // 게시글수정하기 로직
+    // 세부동작들은 클래스를 하나 만들어주고 하는게 좋음 (이유는? 코드의 가독성과 재사용을 위해서)
+    public Board updateBoard(Board board){ // 보드에서 업데이트하라는 요청이 왔을 때 받아주는 역할을 하는 로직으로 쓰임
         Board updatedBoard = boardManager.boardUpdater(board);
-        //업데이트 된 보드를 리턴받아야함
+        // 게시글 저장하기
         return saveBoard(updatedBoard);
-
-
-
     }
-    // 게시글을 저장하기
+
+    // 수정된 게시글을 다시 repository에 .save()저장하기
     private Board saveBoard(Board board){
         return boardRepository.save(board);
     }
 
+    public Board findVerifiedBoard(Long boardId){
+        Board board = boardManager.findVerifiedBoard(boardId);
+        return board;
+    }
 
 
     // 질문 삭제 시, 테이블에서 row 자체가 삭제되는 것이 아니라 질문 상태 값이 (QUESTION_DELETE)으로 변경되어야 한다.
     public void cancelOrder(Long boardId) {
-        Board findBoard = findVerifiedBoard(boardId);
+        Board findBoard = boardManager.findVerifiedBoard(boardId);
         findBoard.setQuestionStatus(Board.QuestionStatus.QUESTION_DELETE);
-        //boardRepository.delete(deleteBoard);
     }
 }
