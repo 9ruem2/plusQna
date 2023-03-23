@@ -12,7 +12,8 @@ public enum ExceptionCode { //예외처리 받는 로직
     CANNOT_CHANGE_ORDER(403, "Order can not change"),
     BOARD_NOT_FOUND(404, "BOARD not found"),
     CANNOT_CHANGE_ANSWERED_QUESTION(403, "CANNOT_CHANGE_ANSWERED_QUESTION"),
-    CANNOT_CHANGE_BOARD(403, "Board can not change"),
+    CANNOT_CHANGE_BOARD(403, "Board can not change & delete "),
+    BOARD_HAS_BEEN_DELETED(403, "Board has been deleted"),
     NOT_IMPLEMENTATION(501, "Not Implementation"),
     INVALID_MEMBER_STATUS(400, "Invalid member status");  // TO 추가된 부분
 

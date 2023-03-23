@@ -1,5 +1,7 @@
-package com.QnaApi.board;
+package com.QnaApi.board.service;
 
+import com.QnaApi.board.entity.Board;
+import com.QnaApi.board.repository.BoardRepository;
 import com.QnaApi.exception.BusinessLogicException;
 import com.QnaApi.exception.ExceptionCode;
 import com.QnaApi.member.Member;
@@ -38,12 +40,7 @@ public class BoardManager {
         checkQuestionAnswered(board);
 
         // repository.board의 title, content, status(공개/ 비공개)로 수정하기
-        changeContent(findBoard,board);
-
-
-
-
-        return findBoard;
+        return changeContent(board);
     }
 
     //boardId로 게시글이 존재하는지 확인하기
@@ -63,13 +60,13 @@ public class BoardManager {
         }
     }
 
-    //(2) 등록된 질문의 제목과 내용은 질문을 등록한 회원(고객)만 수정할 수 있어야 한다.
+    //(2) 등록된 질문의 제목과 내용은 질문을 등록한 회원(고객)만 수정,삭제,조회할 수 있어야 한다.
     public void checkNotExistBoard(Board board){// 업데이트할 내용이 저장되어있는 board라고 가정
         Long customerMemberId = board.getMember().getMemberId(); //업데이트를 요청한 멤버의 아이디를 변수에 저장
         Member findMember = memberService.findVerifiedMember(customerMemberId); // 멤버아이디를 통해 memberRepository에 저장된 멤버객체를 가져옴
         List<Board> boardList = findMember.getBoards(); // 업데이트를 요청한 멤버(findMember)가 작성했던 bordList들을 전부 가져옴
 
-        // 업데이트를 요청한 회원이 작성한 게시글들 중에 업데이트를 하고자하는 게시글의 id가 있는지 for문을 통해 확인
+        // 업데이트,삭제,조회를 요청한 회원이 작성한 게시글들 중에 수정,삭제,조회 하고자하는 게시글의 id가 있는지 for문을 통해 확인
         boolean existBoard = false;
         for(Board b:boardList){
             if(board.getBoardId() == b.getBoardId()){ //업데이트를 요청한 멤버의 게시글목록중 업데이트요청 게시글의 boardId가 있는지 확인
@@ -85,14 +82,30 @@ public class BoardManager {
 
 
     // (1),(2)가 통과되었다는 가정하의 동작이 실행해야함
-    public Board changeContent(Board board, Board findBoard){
-        findBoard.setContentStatus(board.getContentStatus()); // 전달받은 board의 ContentStatus의 값으로 업데이트해줌
-        findBoard.setTitle(board.getTitle()); // 전달받은 board의 타이틀의 값으로 업데이트해줌
-        findBoard.setContent(board.getContent()); // 전달받은 board의 Content의 값으로 업데이트해줌
+    public Board changeContent(Board board){
+        Board findBoard = findVerifiedBoard(board.getBoardId());
+
+        Optional.ofNullable(board.getTitle())
+                .ifPresent(findBoard::setTitle);
+        Optional.ofNullable(board.getContent())
+                .ifPresent(findBoard::setContent);
+        Optional.ofNullable(board.getContentStatus())
+                .ifPresent(findBoard::setContentStatus);
+
         return findBoard;
     }
 
+    public Board delteContent(Board board){
+        Member findMember = memberService.findVerifiedMember(board.getMember().getMemberId());
+        Board findBoard = findVerifiedBoard(board.getBoardId()); // FindBoard은 원본게시글이 저장됨
+        checkNotExistBoard(board);
+//        - 이미 삭제 상태인 질문은 삭제할 수 없다.
+        if(findBoard.getQuestionStatus()==Board.QuestionStatus.QUESTION_DELETE){
+            throw new BusinessLogicException(ExceptionCode.CANNOT_CHANGE_BOARD);
+        }
 
-//fixme (4) 질문을 삭제한경우 ? -> 이 로직이 질문수정 구현에 포함되는게 맞나?(정식님 구현내용참고)
-// 아무튼 삭제되면 QUESTION_DELETE상태로 수정되어야함
+//        - 질문 삭제 시, 테이블에서 row 자체가 삭제되는 것이 아니라 질문 상태 값이 (QUESTION_DELETE)으로 변경되어야 한다.
+        findBoard.setQuestionStatus(Board.QuestionStatus.QUESTION_DELETE);
+        return findBoard;
+    }
 }

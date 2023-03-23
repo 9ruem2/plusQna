@@ -1,4 +1,4 @@
-package com.QnaApi.board;
+package com.QnaApi.board.entity;
 
 import com.QnaApi.audit.Auditable;
 import com.QnaApi.member.Member;

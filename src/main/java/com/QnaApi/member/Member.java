@@ -1,7 +1,7 @@
 package com.QnaApi.member;
 
 import com.QnaApi.audit.Auditable;
-import com.QnaApi.board.Board;
+import com.QnaApi.board.entity.Board;
 import lombok.*;
 
 import javax.persistence.*;

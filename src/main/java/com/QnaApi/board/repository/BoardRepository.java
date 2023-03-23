@@ -1,5 +1,6 @@
-package com.QnaApi.board;
+package com.QnaApi.board.repository;
 
+import com.QnaApi.board.entity.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BoardRepository extends JpaRepository<Board,Long> {

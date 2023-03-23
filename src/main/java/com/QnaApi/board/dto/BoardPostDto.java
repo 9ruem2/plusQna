@@ -1,16 +1,14 @@
-package com.QnaApi.board;
+package com.QnaApi.board.dto;
 
+import com.QnaApi.board.entity.Board;
 import lombok.Getter;
-import lombok.Setter;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import javax.validation.constraints.Positive;
 
 @Getter
-@Validated
+//@Validated
 public class BoardPostDto {
     @Positive
     private Long memberId;

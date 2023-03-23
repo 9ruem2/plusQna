@@ -1,14 +1,11 @@
-package com.QnaApi.board;
+package com.QnaApi.board.dto;
 
+import com.QnaApi.board.entity.Board;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.criterion.Order;
-import org.springframework.validation.annotation.Validated;
-import com.QnaApi.board.Board.ContentStatus;
 
 @Setter
 @Getter
-@Validated
 public class BoardPatchDto {
     private Long memberId;
     private Long boardId;

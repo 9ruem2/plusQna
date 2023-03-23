@@ -16,7 +16,7 @@ public class MemberPostDto {
     @NotBlank
     private String email;
 
-    @NotEmpty(message = "이름은 공백이 아니어야 한다") // Fixme
+    @NotBlank(message = "이름은 공백이 아니어야 한다") // Fixme
     private String name;
 
     @Pattern(message = "휴대폰 번호는 010으로 시작하는 11자리 숫자와 '-'로 구성되어야 한다.",

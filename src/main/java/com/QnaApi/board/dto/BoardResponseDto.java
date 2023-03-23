@@ -1,4 +1,4 @@
-package com.QnaApi.board;
+package com.QnaApi.board.dto;
 
 import lombok.Getter;
 import lombok.Setter;
