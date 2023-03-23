@@ -4,7 +4,7 @@ import com.QnaApi.board.entity.Board;
 import com.QnaApi.board.repository.BoardRepository;
 import com.QnaApi.exception.BusinessLogicException;
 import com.QnaApi.exception.ExceptionCode;
-import com.QnaApi.member.MemberService;
+import com.QnaApi.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,6 @@ public class BoardService {
     public Board createBoard(Board board) {
         // 회원가입이 된 멤버인지 확인하기
         memberService.findVerifiedMember(board.getMember().getMemberId());
-
         return saveBoard(board);
     }
 

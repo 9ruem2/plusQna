@@ -1,7 +1,8 @@
-package com.QnaApi.member;
+package com.QnaApi.member.mapper;
 
+import com.QnaApi.member.entity.Member;
+import com.QnaApi.member.dto.MemberPostDto;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface MemberMapper {

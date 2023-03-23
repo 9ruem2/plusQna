@@ -4,7 +4,7 @@ import com.QnaApi.board.dto.*;
 import com.QnaApi.board.entity.Board;
 import com.QnaApi.board.mapper.BoardMapper;
 import com.QnaApi.board.service.BoardService;
-import com.QnaApi.member.MemberService;
+import com.QnaApi.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -62,12 +62,12 @@ public class BoardController {
         // 비밀글 이라면 질문을 등록한 회원과 관리자만 조회할 수 있다.
         // 게시글이 공개인지, 비공개인지 확인->공개글이라면 회원과 관리자 모두 조회할 수 있다.
         boardService.getArticle(board);
+        Board findBoard = boardService.findVerifiedBoard(board.getBoardId());
 
-        // 1건의 질문 조회 시 질문에 대한 답변이 존재한다면 답변도 함께 조회되어야 한다.
-        // board의 row에 comment추가. -> board와 Comment의 관계?
-        // 하나의 게시글은 여러개의 댓글을 받을 수 있다. 하나의 댓글은 하나의 글에만 달 수 있다..? -> 1:n관계인건가?
-
-        BoardResponseDto boardResponseDto = mapper.BoardToBoardResponseDto(board);
+        //1건의 질문 조회 시 질문에 대한 답변이 존재한다면 답변도 함께 조회되어야 한다.
+        //1:1 = 하나의 게시글에는 하나의 답변만 받을 수 있다 (Frequently Asked Questions, FAQ, 자주묻는 질문과 답변)
+        //1:n = 일반적인 게시물: 하나의 질문글에는 여러개의 답변을 받을 수 있다
+        BoardResponseDto boardResponseDto = mapper.BoardToBoardResponseDto(findBoard);
         return new ResponseEntity<>(boardResponseDto,HttpStatus.OK);
     }
 
@@ -85,12 +85,12 @@ public class BoardController {
     ᄂ 조회수가 많은 순으로(조회수 구현 이후 적용)
     ᄂ 조회수가 적은 순으로(조회수 구현 이후 적용)
  */
-    //Fixme
-    @GetMapping
-    public ResponseEntity getBoards(@Valid @RequestBody BoardGetDto boardGetDto){
-        MultiResponseDto multiResponseDto = mapper.BoardToMultiResponsDto(boardGetDto);
-        return new ResponseEntity<>(multiResponseDto, HttpStatus.OK);
-    }
+//Fixme
+//    @GetMapping
+//    public ResponseEntity getBoards(@Valid @RequestBody BoardGetDto boardGetDto){
+//        MultiResponseDto multiResponseDto = mapper.BoardToMultiResponsDto(boardGetDto);
+//        return new ResponseEntity<>(multiResponseDto, HttpStatus.OK);
+//    }
 
 
 /*

@@ -4,9 +4,9 @@ import com.QnaApi.board.entity.Board;
 import com.QnaApi.board.repository.BoardRepository;
 import com.QnaApi.exception.BusinessLogicException;
 import com.QnaApi.exception.ExceptionCode;
-import com.QnaApi.member.Member;
-import com.QnaApi.member.MemberRepository;
-import com.QnaApi.member.MemberService;
+import com.QnaApi.member.entity.Member;
+import com.QnaApi.member.repository.MemberRepository;
+import com.QnaApi.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

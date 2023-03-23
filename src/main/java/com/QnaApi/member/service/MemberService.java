@@ -1,7 +1,9 @@
-package com.QnaApi.member;
+package com.QnaApi.member.service;
 
 import com.QnaApi.exception.BusinessLogicException;
 import com.QnaApi.exception.ExceptionCode;
+import com.QnaApi.member.entity.Member;
+import com.QnaApi.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

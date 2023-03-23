@@ -1,4 +1,4 @@
-package com.QnaApi.member;
+package com.QnaApi.member.dto;
 
 import lombok.Setter;
 

@@ -1,6 +1,10 @@
-package com.QnaApi.member;
+package com.QnaApi.member.controller;
 
-import lombok.AllArgsConstructor;
+import com.QnaApi.member.dto.MemberPatchDto;
+import com.QnaApi.member.dto.MemberPostDto;
+import com.QnaApi.member.service.MemberService;
+import com.QnaApi.member.entity.Member;
+import com.QnaApi.member.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

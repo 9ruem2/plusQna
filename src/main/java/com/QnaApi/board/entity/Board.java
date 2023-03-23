@@ -1,13 +1,11 @@
 package com.QnaApi.board.entity;
 
+import com.QnaApi.answer.entity.Answer;
 import com.QnaApi.audit.Auditable;
-import com.QnaApi.member.Member;
+import com.QnaApi.member.entity.Member;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity(name = "BOARD")
 @Getter
@@ -47,4 +45,7 @@ public class Board extends Auditable {
         PUBLIC,
         SECRET;
     }
+
+    @OneToOne(mappedBy = "board", cascade = CascadeType.PERSIST)
+    private Answer answer;
 }
