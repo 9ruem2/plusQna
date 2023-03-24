@@ -1,5 +1,6 @@
 package com.QnaApi.exceptionAdvice;
 
+import com.QnaApi.exception.ExceptionCode;
 import lombok.Getter;
 import org.springframework.validation.BindingResult;
 
@@ -14,6 +15,13 @@ public class ErrorResponse {
     private List<FieldError> fieldErrors; //(1)MethodArgumentNotValidException으로부터 발생하는 에러 정보를 담는 멤버 변수
     private List<ConstraintViolationError> violationErrors;  // (2) constraintViolationException으로부터 발생하는 에러 정보를 담는 멤버변수
     //즉, URI변수 값의 유효성 검증에 실패로 발생한 에러 정보를 담는 멤버 변수이다.
+    private int status;
+    private String message;
+
+    public ErrorResponse(int status, String message) {
+        this.status = status;
+        this.message = message;
+    }
 
     // (3)
     private ErrorResponse(List<FieldError> fieldErrors, List<ConstraintViolationError> violationErrors) {
@@ -29,6 +37,10 @@ public class ErrorResponse {
     // (5) Set<ConstraintViolation<?>> 객체에 대한 ErrorResponse 객체 생성
     public static ErrorResponse of(Set<ConstraintViolation<?>> violations) {
         return new ErrorResponse(null, ConstraintViolationError.of(violations));
+    }
+
+    public static ErrorResponse of(ExceptionCode exceptionCode) {
+        return new ErrorResponse(exceptionCode.getStatus(), exceptionCode.getMessage());
     }
 
     // (6) Field Error 가공

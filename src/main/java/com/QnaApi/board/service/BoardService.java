@@ -60,38 +60,35 @@ public class BoardService {
         boardRepository.save(deletedBoard);
     }
 
-    public void isDeleted(Board board){ //fixme QuestionStatus.QUESTION_DELETE 일때 에러가 클라이언트측과 콘솔창에 다르게뜨는 문함
+    public void isDeleted(Board board) { //fixme QuestionStatus.QUESTION_DELETE 일때 에러가 클라이언트측과 콘솔창에 다르게뜨는 문
         //- 보드의 상태가 delete인지 확인 하고 delete라면 삭제상태라면 보드를 읽어올 수 없다고 예외를 던짐
-        if(board.getQuestionStatus()==Board.QuestionStatus.QUESTION_DELETE){
+        if (board.getQuestionStatus() == Board.QuestionStatus.QUESTION_DELETE) {
             throw new BusinessLogicException(ExceptionCode.BOARD_HAS_BEEN_DELETED);
         }
     }
 
 //    게시글이 공개인지, 비공개인지 확인하기
-    public boolean getPublicationStatus(Board board){
+    public boolean getPublicationStatus (Board board){
         boolean boardSecret = false;
-        if(board.getContentStatus().equals(Board.ContentStatus.SECRET)){
+        if (board.getContentStatus().equals(Board.ContentStatus.SECRET)) {
             return boardSecret = true; // 게시글 = 비공개 상태
         }
         return boardSecret;
     }
 
-    //1건의 게시글을 조회하는 메서드
-    public void getArticle(Board board){
+        //1건의 게시글을 조회하는 메서드
+    public void getArticle (Board board){
         boolean boardSecret = getPublicationStatus(board);
-        if(boardSecret) {
+        if (boardSecret) {
             // 게시글이 비공개 상태라면
             // 게시글을 조회하려는 사람의 memberId와 저장되어있는 게시글을 작성한 memberId가 같은지 확인하기
             boardManager.checkNotExistBoard(board);
         }
     }
 
-    //  1건의 질문 조회 시 질문에 대한 답변이 존재한다면 답변도 함께 조회되어야 한다.
-    public Page<Board> findBoards(int page, int size) {
+        //  1건의 질문 조회 시 질문에 대한 답변이 존재한다면 답변도 함께 조회되어야 한다.
+    public Page<Board> findBoards ( int page, int size){
         return boardRepository.findAll(PageRequest.of(page, size,
                 Sort.by("boardId").descending())); //보드id를 기준으로 내림차순으로 보드를 정렬해서 해당하는 페이지에 대한 정보를 넘겨줌
     }
-
-
-
 }

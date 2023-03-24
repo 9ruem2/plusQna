@@ -1,7 +1,9 @@
 package com.QnaApi.exceptionAdvice;
 
+import com.QnaApi.exception.BusinessLogicException;
 import com.QnaApi.exceptionAdvice.ErrorResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -27,5 +29,12 @@ public class GlobalExceptionAdvice {
         final ErrorResponse response = ErrorResponse.of(e.getConstraintViolations());
 
         return response;
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleBusinessLogicException(BusinessLogicException e) {
+        final ErrorResponse response = ErrorResponse.of(e.getExceptionCode());
+
+        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
     }
 }
