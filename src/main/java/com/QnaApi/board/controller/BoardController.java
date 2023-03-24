@@ -55,17 +55,16 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public ResponseEntity getBoard(@PathVariable ("boardId") int boardId,
                                        @Valid @RequestBody BoardGetDto boardGetDto){
-        Board board = mapper.boardGetDtoToBoard(boardGetDto);
+        Board findBoard = boardService.findVerifiedBoard(mapper.boardGetDtoToBoard(boardGetDto).getBoardId());
         //Board board = boardService.findVerifiedBoard();
 
         // 이미 삭제 상태인 질문은 조회할 수 없다.
         // 따라서 보드의 상태가 delete면 가져올 수 없다고 예외를 던진다.
-        boardService.isDeleted(board);
+        boardService.isDeleted(findBoard);
 
         // 비밀글 이라면 질문을 등록한 회원과 관리자만 조회할 수 있다.
         // 게시글이 공개인지, 비공개인지 확인->공개글이라면 회원과 관리자 모두 조회할 수 있다.
-        boardService.getArticle(board);
-        Board findBoard = boardService.findVerifiedBoard(board.getBoardId());
+        boardService.getArticle(findBoard);
 
         //1건의 질문 조회 시 질문에 대한 답변이 존재한다면 답변도 함께 조회되어야 한다.
         //1:1 = 하나의 게시글에는 하나의 답변만 받을 수 있다 (Frequently Asked Questions, FAQ, 자주묻는 질문과 답변)
@@ -77,7 +76,7 @@ public class BoardController {
 /*
 등록한 여러 건의 질문을 조회하는 기능
 - 여러 건의 질문 목록은 회원(고객)과 관리자 모두 조회할 수 있다.
-- 삭제 상태가 아닌 질문만 조회할 수 있다.
+- 삭제 상태가 아닌 질문만 조회할 수 있다. //Fixme
 - 여러 건의 질문 목록에서 각각의 질문에 답변이 존재한다면 답변도 함께 조회 할수있어야한다.
 - 여러 건의 질문 목록은 페이지네이션 처리가 되어 일정 건수 만큼의 데이터만 조회할 수 있어야 한다.
 - 여러 건의 질문 목록은 아래의 조건으로 정렬해서 조회할 수 있어야 한다.
@@ -88,12 +87,15 @@ public class BoardController {
     ᄂ 조회수가 많은 순으로(조회수 구현 이후 적용)
     ᄂ 조회수가 적은 순으로(조회수 구현 이후 적용)
  */
-//Fixme
+
 /*
 public ResponseEntity getOrders(@Positive @RequestParam int page,
                                 @Positive @RequestParam int size) {
 질문하고싶은 내용? 같은 http메서드도 Get이고 Uri도 같으니까 boads를 구분해 주기 위해서 @RequesParam을 사용한 것인데
 @RequestParam대신 dto로는 받을 수 없는지 다른 방법이 없는지?
+
+ᄂ 최신글 순으로
+ᄂ 오래된글순으로 어떻게 요청을받아야하는지 ?
  */
     @GetMapping
     public ResponseEntity getBoards(@Positive @RequestParam int page,
