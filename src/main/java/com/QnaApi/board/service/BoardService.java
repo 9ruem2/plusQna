@@ -60,7 +60,7 @@ public class BoardService {
         boardRepository.save(deletedBoard);
     }
 
-    public void isDeleted(Board board){ //fixme QuestionStatus.QUESTION_DELETE 일때 에러가 클라이언트측과 콘솔창에 다르게뜨는 문제
+    public void isDeleted(Board board){ //fixme QuestionStatus.QUESTION_DELETE 일때 에러가 클라이언트측과 콘솔창에 다르게뜨는 문함
         //- 보드의 상태가 delete인지 확인 하고 delete라면 삭제상태라면 보드를 읽어올 수 없다고 예외를 던짐
         if(board.getQuestionStatus()==Board.QuestionStatus.QUESTION_DELETE){
             throw new BusinessLogicException(ExceptionCode.BOARD_HAS_BEEN_DELETED);
