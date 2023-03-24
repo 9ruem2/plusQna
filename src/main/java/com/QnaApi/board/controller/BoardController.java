@@ -7,6 +7,7 @@ import com.QnaApi.board.service.BoardService;
 import com.QnaApi.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.util.List;
 
 @RestController // @Controller와 @ResponsBody의 동작을 하나로 결합한 편의 컨트롤러, 모든 핸들러 메소드에서 @ResponseBody를 사용할 필요가 없다는 것입니다.
 @RequestMapping("/v1/boards")
@@ -50,8 +52,9 @@ public class BoardController {
 - 1건의 질문 조회 시, 해당 질문에 대한 답변이 존재한다면 답변도 함께 조회되어야 한다.
  */
 
-    @GetMapping
-    public ResponseEntity getBoard(@Valid @RequestBody BoardGetDto boardGetDto){
+    @GetMapping("/{boardId}")
+    public ResponseEntity getBoard(@PathVariable ("boardId") int boardId,
+                                       @Valid @RequestBody BoardGetDto boardGetDto){
         Board board = mapper.boardGetDtoToBoard(boardGetDto);
         //Board board = boardService.findVerifiedBoard();
 
@@ -86,11 +89,21 @@ public class BoardController {
     ᄂ 조회수가 적은 순으로(조회수 구현 이후 적용)
  */
 //Fixme
-//    @GetMapping
-//    public ResponseEntity getBoards(@Valid @RequestBody BoardGetDto boardGetDto){
-//        MultiResponseDto multiResponseDto = mapper.BoardToMultiResponsDto(boardGetDto);
-//        return new ResponseEntity<>(multiResponseDto, HttpStatus.OK);
-//    }
+/*
+public ResponseEntity getOrders(@Positive @RequestParam int page,
+                                @Positive @RequestParam int size) {
+질문하고싶은 내용? 같은 http메서드도 Get이고 Uri도 같으니까 boads를 구분해 주기 위해서 @RequesParam을 사용한 것인데
+@RequestParam대신 dto로는 받을 수 없는지 다른 방법이 없는지?
+ */
+    @GetMapping
+    public ResponseEntity getBoards(@Positive @RequestParam int page,
+                                    @Positive @RequestParam int size){
+        Page<Board> pageBoards = boardService.findBoards(page -1, size);
+        List<Board> boards = pageBoards.getContent();
+
+        return new ResponseEntity<>(new MultiResponseDto(
+                mapper.boardsToBoardResponseDtos(boards), pageBoards),HttpStatus.OK);
+    }
 
 
 /*

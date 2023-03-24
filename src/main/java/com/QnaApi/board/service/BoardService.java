@@ -6,6 +6,9 @@ import com.QnaApi.exception.BusinessLogicException;
 import com.QnaApi.exception.ExceptionCode;
 import com.QnaApi.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
@@ -84,6 +87,11 @@ public class BoardService {
     }
 
     //  1건의 질문 조회 시 질문에 대한 답변이 존재한다면 답변도 함께 조회되어야 한다.
+    public Page<Board> findBoards(int page, int size) {
+        return boardRepository.findAll(PageRequest.of(page, size,
+                Sort.by("boardId").descending())); //보드id를 기준으로 내림차순으로 보드를 정렬해서 해당하는 페이지에 대한 정보를 넘겨줌
+    }
+
 
 
 }
